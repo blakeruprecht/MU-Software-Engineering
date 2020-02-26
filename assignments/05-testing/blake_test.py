@@ -32,7 +32,7 @@ def test_change_grade(grading_system):
     user = "yted91"
     course = "software_engineering"
     assignment = "assignment2"
-    grade = 3
+    grade = 42
     grading_system.usr.change_grade(user,course,assignment,grade)
     assert grading_system.usr.check_grades(user,course)[1][1] == grade
 
@@ -126,20 +126,61 @@ def test_view_assignments(grading_system):
     assert grading_system.usr.view_assignments(course2)[0][1] == due_date21 # it checks the due_date for 'comp_sci'
     assert grading_system.usr.view_assignments(course2)[1][1] == due_date22
 
-#11. test_that_fails
-#1. login - System.py
-def test_login(grading_system):
+#11. test_case_login
+def test_case_login(grading_system):
     username = "saab"
-    password = "boomr345"
+    password = "Boomr345"
     grading_system.login(username,password)
     assert grading_system.usr.name == username
     assert grading_system.usr.courses[0] == "comp_sci"
-    assert grading_system.usr.password == password
+    assert grading_system.usr.password == password      # This has to be case sensitive!
 
-#12. test_that_fails
+#12. test wrong_professor
+def test_wrong_person_creating(grading_system):
+    username = "cmhbf5"
+    password = "bestTA"
+    grading_system.login(username,password)
+    assignment_name = "assignmentTEST"
+    due_date = "2/28/20"
+    course = "databases"
+    assert grading_system.usr.all_courses[course]['ta'] == username
+    grading_system.usr.create_assignment(assignment_name, due_date, course)
+    grading_system.reload_data()
 
 #13. test_that_fails
+def test_wrong_professor_changing(grading_system):
+    username = "goggins"
+    password = "augurrox"
+    grading_system.login(username,password)
+    user = "yted91"
+    course = "cloud_computing"
+    assert grading_system.usr.all_courses[course]['professor'] == username
+    assignment = "assignment2"
+    grade = 42
+    grading_system.usr.change_grade(user,course,assignment,grade)
 
 #14. test_that_fails
+#6. drop_student Professor.py
+def test_drop_wrong_student(grading_system):
+    username = "goggins"
+    password = "augurrox"
+    grading_system.login(username,password)
+    name = "akend3"
+    course = 'comp_sci'
+    assert grading_system.usr.all_courses[course]['professor'] == username
+    grading_system.usr.drop_student(name,course)
+    grading_system.reload_data()
+    if course in grading_system.usr.users[name]['courses']:
+        assert False
+    else:
+        assert True
 
-#15. test_that_fails
+#15. test_add_student_towrongclass
+def test_add_student_towrongclass(grading_system):
+    username = "goggins"
+    password = "augurrox"
+    grading_system.login(username,password)
+    name = 'bcrf53'
+    course = 'cloud_computing'
+    assert grading_system.usr.all_courses[course]['professor'] == username
+    grading_system.usr.add_student(name,course)         # fails in Line 21
