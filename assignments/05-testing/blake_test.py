@@ -159,8 +159,7 @@ def test_wrong_professor_changing(grading_system):
     grade = 42
     grading_system.usr.change_grade(user,course,assignment,grade)
 
-#14. test_that_fails
-#6. drop_student Professor.py
+#14. drop_student Professor.py
 def test_drop_wrong_student(grading_system):
     username = "goggins"
     password = "augurrox"
